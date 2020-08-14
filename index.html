@@ -1,0 +1,1027 @@
+<html>
+<head>
+<title>Space Defender - Processing.js</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<style type="text/css">
+	body{
+		background: #202020;
+	}
+</style>
+</style>
+<script src="processing.js"></script>
+<script type="text/processing" data-processing-target="minhajanela">
+	Pfont f;
+	int pontos = 0;
+	int vida=5;
+	int px1 = random(150,850);
+	int py1 = -100;
+	int px2 = random(200,800);
+	int py2 = -70;
+	int px3 = random(300,700);
+	int py3 = -50;
+	int expX1 = 0;
+	int expY1 = 0;
+	int expX2 = 0;
+	int expY2 = 0;
+	int expX3 = 0;
+	int expY3 = 0;
+	int record = 0;
+	int state = 0;//0-Abertura 1-Game 2-encerra
+	int p = 0;
+	int balaPente1=20;
+	int balaReserva1=20;
+	int balaReserva1b=20;
+	int balaPente2=31;
+	int balaReserva2=30;
+	int balaReserva2b=30;
+	int balaPente3=40;
+	int balaReserva3=40;
+	int balaReserva3b=40;
+	int nave=2;
+	float velocidade = 25;
+	boolean explodiu1 = false;
+	boolean explodiu2 = false;
+	boolean explodiu3 = false;
+	int numFrames = 8;  
+	int currentFrameExp1 = 0;
+	int currentFrameExp2 = 0;
+	int currentFrameExp3 = 0;
+	PImage bg;
+	Pimage mira;
+	Pimage sabre;
+	PImage abertura;
+	PImage encerra;
+	PImage nave1;
+	PImage nave2;
+	PImage nave3;
+	PImage[] tiro1 = new PImage[5];
+	PImage[] hud = new PImage[4];
+	PImage[] imagens = new PImage[numFrames];
+	float centerMeteoro1X = px1;
+	float centerMeteoro1Y = py1;
+	float centerMeteoro1Width = 100;
+	float centerMeteoro1Height = 100;
+	float centerMeteoro2X = px2;
+	float centerMeteoro2Y = py2;
+	float centerMeteoro2Width = 70;
+	float centerMeteoro2Height = 70;
+	float centerMeteoro3X = px3;
+	float centerMeteoro3Y = py3;
+	float centerMeteoro3Width = 50;
+	float centerMeteoro3Height = 50;
+	int[] Tiro1PX = new int[2];
+	int[] Tiro1PY = new int[2];
+	int[] Tiro2PX = new int[3];
+	int[] Tiro2PY = new int[3];
+	int[] Tiro3PX = new int[5];
+	int[] Tiro3PY = new int[5];
+	float Tiro1Width = 100;
+	float Tiro1Height = 130;
+	float Tiro2Width = 50;
+	float Tiro2Height = 110;
+	float Tiro3Width = 25;
+	float Tiro3Height = 80;
+	boolean[] tiro1Disparado = new boolean[2];
+	boolean[] tiro2Disparado = new boolean[3];
+	boolean[] tiro3Disparado = new boolean[5];
+	
+	void setup() {
+		size(1000, 500);
+		strokeWeight(1);
+		stroke(255,0,0);
+		frameRate(velocidade);
+		mira = loadImage("imagens/mira.png");
+		sabre = loadImage("imagens/sabre.png");
+		alvo = loadImage("imagens/meteoro.png");
+		noCursor();
+		f = createFont("Arial",30,true);
+		imagens[0]  = loadImage("imagens/explo1.png");	
+		imagens[1]  = loadImage("imagens/explo2.png");
+		imagens[2]  = loadImage("imagens/explo3.png");
+		imagens[3]  = loadImage("imagens/explo4.png"); 
+		imagens[4]  = loadImage("imagens/explo5.png"); 
+		imagens[5]  = loadImage("imagens/explo6.png");
+		imagens[6]  = loadImage("imagens/explo7.png");
+		imagens[7]  = loadImage("imagens/explo8.png");
+		bg = loadImage("imagens/fundo.jpg");
+		abertura = loadImage("imagens/abertura.jpg");
+		encerra = loadImage("imagens/gameover.jpg");
+		nave1 = loadImage("imagens/milenium.png");
+		nave2 = loadImage("imagens/nave2.png");
+		nave3 = loadImage("imagens/nave3.png");
+		hud[0] = loadImage("imagens/hud.png");
+		hud[1] = loadImage("imagens/hud1.png");
+		hud[2] = loadImage("imagens/hud2.png");
+		hud[3] = loadImage("imagens/hud3.png");
+		hud[4] = loadImage("imagens/hud4.png");
+		tiro1[0] = loadImage("imagens/tiro1.png");
+		tiro1[1] = loadImage("imagens/tiro2.png");
+		tiro1[2] = loadImage("imagens/tiro3.png");
+		Tiro1PX[0]=1500;
+		Tiro1PY[0]=0;
+		Tiro2PX[0]=1500;
+		Tiro2PY[0]=0;
+		Tiro3PX[0]=1500;
+		Tiro3PY[0]=0;
+		Tiro1PX[1]=1500;
+		Tiro1PY[1]=0;
+		Tiro2PX[1]=1500;
+		Tiro2PY[1]=0;
+		Tiro3PX[1]=1500;
+		Tiro3PY[1]=0;
+		Tiro1PX[2]=1500;
+		Tiro1PY[2]=0;
+		Tiro2PX[2]=1500;
+		Tiro2PY[2]=0;
+		Tiro3PX[2]=1500;
+		Tiro3PY[2]=0;
+		tiro1Disparado[0] = false;
+		tiro2Disparado[0] = false;
+		tiro3Disparado[0] = false;
+		tiro1Disparado[1] = false;
+		tiro2Disparado[1] = false;
+		tiro3Disparado[1] = false;
+		tiro2Disparado[2] = false;
+		tiro3Disparado[2] = false;
+		tiro3Disparado[3] = false;
+		tiro3Disparado[4] = false;
+		
+	}
+	void draw() {
+		if(state==0){
+			drawAbertura();
+		}else if(state==2){
+			drawGameOver();
+		}else{
+			background(0);
+			image(bg,0,0);
+			frameRate(velocidade);
+			centerMeteoro1X = px1;
+	    	centerMeteoro1Y = py1;
+			centerMeteoro2X = px2;
+	    	centerMeteoro2Y = py2;
+			centerMeteoro3X = px3;
+	    	centerMeteoro3Y = py3;
+			if(vida<=0){
+				state=2;
+				if(pontos>record){
+					record=pontos;
+				}
+				p=pontos;
+				pontos=0;
+				vida=5;
+				py1=-100;
+				py2=-100;
+				py3=-100;
+				velocidade=25;
+				nave=2;
+				balaPente1=20;
+				balaReserva1=20;
+				balaReserva1b=20;
+				balaPente2=30;
+				balaReserva2=30;
+				balaReserva2b=30;
+				balaPente3=40;
+				balaReserva3=40;
+				balaReserva3b=40;
+				Tiro1PX[0]=1500;
+				Tiro1PY[0]=0;
+				Tiro2PX[0]=1500;
+				Tiro2PY[0]=0;
+				Tiro3PX[0]=1500;
+				Tiro3PY[0]=0;
+				Tiro1PX[1]=1500;
+				Tiro1PY[1]=0;
+				Tiro2PX[1]=1500;
+				Tiro2PY[1]=0;
+				Tiro3PX[1]=1500;
+				Tiro3PY[1]=0;
+				Tiro1PX[2]=1500;
+				Tiro1PY[2]=0;
+				Tiro2PX[2]=1500;
+				Tiro2PY[2]=0;
+				Tiro3PX[2]=1500;
+				Tiro3PY[2]=0;
+			}
+			py1 = py1 + 4;
+			if(py1>=500){
+				py1=-100;
+				px1=random(150,850);
+				vida-=1;
+			}
+			if(py2>=500){
+				py2=-70;
+				px2=random(200,800);
+				vida-=1;
+			}
+			if(py3>=500){
+				py3=-50;
+				px3=random(300,700);
+				vida-=1;
+			}
+			if(pontos>=35){
+				velocidade=30;
+			}
+			if(pontos>=100){
+				velocidade=35;
+			}
+			if(pontos>=150){
+				velocidade=40;
+			}
+			if(pontos>=200){
+				velocidade=45;
+			}
+			if(pontos>=300){
+				velocidade=50;
+			}
+			if(pontos>=400){
+				velocidade=55;
+			}
+			if(pontos>=500){
+				velocidade=60;
+			}
+			if(pontos>=600){
+				velocidade=65;
+			}
+			if(pontos>=700){
+				velocidade=70;
+			}
+			if(pontos>=800){
+				velocidade=75;
+			}
+			if(pontos>=900){
+				velocidade=80;
+			}
+			if(pontos>=1000){
+				velocidade=85;
+			}
+			if(pontos>=1100){
+				velocidade=90;
+			}
+			if(pontos>=1200){
+				velocidade=95;
+			}
+			if(pontos>=1300){
+				velocidade=100;
+			}
+			if(pontos>=1400){
+				velocidade=110;
+			}
+			image(alvo, px1, py1, 100,100);
+			if(pontos>=50){
+				image(alvo, px2, py2, 70,70);
+				py2 = py2 + 4;
+			}
+			if(pontos>=100){
+				image(alvo, px3, py3, 50,50);
+				py3 = py3 + 4;
+			}
+			if(explodiu1==true){
+				currentFrameExp1 = (currentFrameExp1+1);
+				image(imagens[currentFrameExp1], expX1, expY1, 100, 100);
+				if(currentFrameExp1==7){
+					explodiu1=false;
+				}	
+			}
+			if(explodiu2==true){
+				currentFrameExp2 = (currentFrameExp2+1);
+				image(imagens[currentFrameExp2], expX2, expY2, 70, 70);
+				if(currentFrameExp2==7){
+					explodiu2=false;
+				}	
+			}
+			if(explodiu3==true){
+				currentFrameExp3 = (currentFrameExp3+1);
+				image(imagens[currentFrameExp3], expX3, expY3, 50, 50);
+				if(currentFrameExp3==7){
+					explodiu3=false;
+				}	
+			}
+			//Tiros
+			
+				
+				if(Tiro1PY[0]<0){
+					tiro1Disparado[0] = false;
+				}
+				if(Tiro1PY[1]<0){
+					tiro1Disparado[1] = false;
+				}
+				if(Tiro2PY[0]<0){
+					tiro2Disparado[0] = false;
+				}
+				if(Tiro2PY[1]<0){
+					tiro2Disparado[1] = false;
+				}
+				if(Tiro2PY[2]<0){
+					tiro2Disparado[2] = false;
+				}
+				if(Tiro3PY[0]<0){
+					tiro3Disparado[0] = false;
+				}
+				if(Tiro3PY[1]<0){
+					tiro3Disparado[1] = false;
+				}
+				if(Tiro3PY[2]<0){
+					tiro3Disparado[2] = false;
+				}
+				if(Tiro3PY[3]<0){
+					tiro3Disparado[3] = false;
+				}
+				if(Tiro3PY[4]<0){
+					tiro3Disparado[4] = false;
+				}
+				
+				//meteoro grande
+				noFill();
+				stroke(255);
+				if (Tiro1PX[0] + Tiro1Width > centerMeteoro1X && Tiro1PX[0] < centerMeteoro1X + centerMeteoro1Width && Tiro1PY[0] + Tiro1Height > centerMeteoro1Y && Tiro1PY[0] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro1PX[0]=1500;
+						tiro1Disparado[0] = false;
+				}
+				if (Tiro1PX[1] + Tiro1Width > centerMeteoro1X && Tiro1PX[1] < centerMeteoro1X + centerMeteoro1Width && Tiro1PY[1] + Tiro1Height > centerMeteoro1Y && Tiro1PY[1] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro1PX[1]=1500;
+						tiro1Disparado[1] = false;
+				}
+				if (Tiro2PX[0] + Tiro2Width > centerMeteoro1X && Tiro2PX[0] < centerMeteoro1X + centerMeteoro1Width && Tiro2PY[0] + Tiro2Height > centerMeteoro1Y && Tiro2PY[0] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro2PX[0]=1500;
+						tiro2Disparado[0] = false;
+				}
+				if (Tiro2PX[1] + Tiro2Width > centerMeteoro1X && Tiro2PX[1] < centerMeteoro1X + centerMeteoro1Width && Tiro2PY[1] + Tiro2Height > centerMeteoro1Y && Tiro2PY[1] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro2PX[1]=1500;
+						tiro2Disparado[1] = false;
+				}
+				if (Tiro2PX[2] + Tiro2Width > centerMeteoro1X && Tiro2PX[2] < centerMeteoro1X + centerMeteoro1Width && Tiro2PY[2] + Tiro2Height > centerMeteoro1Y && Tiro2PY[2] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro2PX[2]=1500;
+						tiro2Disparado[2] = false;
+				}
+				if (Tiro3PX[0] + Tiro3Width > centerMeteoro1X && Tiro3PX[0] < centerMeteoro1X + centerMeteoro1Width && Tiro3PY[0] + Tiro3Height > centerMeteoro1Y && Tiro3PY[0] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro3PX[0]=1500;
+						tiro3Disparado[0] = false;
+				}if (Tiro3PX[1] + Tiro3Width > centerMeteoro1X && Tiro3PX[1] < centerMeteoro1X + centerMeteoro1Width && Tiro3PY[1] + Tiro3Height > centerMeteoro1Y && Tiro3PY[1] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro3PX[1]=1500;
+						tiro3Disparado[1] = false;
+				}if (Tiro3PX[2] + Tiro3Width > centerMeteoro1X && Tiro3PX[2] < centerMeteoro1X + centerMeteoro1Width && Tiro3PY[2] + Tiro3Height > centerMeteoro1Y && Tiro3PY[2] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro3PX[2]=1500;
+						tiro3Disparado[2] = false;
+				}if (Tiro3PX[3] + Tiro3Width > centerMeteoro1X && Tiro3PX[3] < centerMeteoro1X + centerMeteoro1Width && Tiro3PY[3] + Tiro3Height > centerMeteoro1Y && Tiro3PY[3] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro3PX[3]=1500;
+						tiro3Disparado[3] = false;
+				}
+				if (Tiro3PX[4] + Tiro3Width > centerMeteoro1X && Tiro3PX[4] < centerMeteoro1X + centerMeteoro1Width && Tiro3PY[4] + Tiro3Height > centerMeteoro1Y && Tiro3PY[4] < centerMeteoro1Y + centerMeteoro1Height) {
+						pontos+=5;
+						expX1=px1;
+						expY1=py1;
+						currentFrameExp1=0;
+						explodiu1=true;
+						py1=-100;
+						px1=random(50,900);
+						Tiro3PX[4]=1500;
+						tiro3Disparado[4] = false;
+				}
+				
+				//meteoro médio
+				
+				if (Tiro1PX[0] + Tiro1Width > centerMeteoro2X && Tiro1PX[0] < centerMeteoro2X + centerMeteoro2Width && Tiro1PY[0] + Tiro1Height > centerMeteoro2Y && Tiro1PY[0] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro1PX[0]=1500;
+						tiro1Disparado[0] = false;
+				}
+				if (Tiro1PX[1] + Tiro1Width > centerMeteoro2X && Tiro1PX[1] < centerMeteoro2X + centerMeteoro2Width && Tiro1PY[1] + Tiro1Height > centerMeteoro2Y && Tiro1PY[1] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro1PX[1]=1500;
+						tiro1Disparado[1] = false;
+				}
+				if (Tiro2PX[0] + Tiro2Width > centerMeteoro2X && Tiro2PX[0] < centerMeteoro2X + centerMeteoro2Width && Tiro2PY[0] + Tiro2Height > centerMeteoro2Y && Tiro2PY[0] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro2PX[0]=1500;
+						tiro2Disparado[0] = false;
+				}
+				if (Tiro2PX[1] + Tiro2Width > centerMeteoro2X && Tiro2PX[1] < centerMeteoro2X + centerMeteoro2Width && Tiro2PY[1] + Tiro2Height > centerMeteoro2Y && Tiro2PY[1] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro2PX[1]=1500;
+						tiro2Disparado[1] = false;
+				}
+				if (Tiro2PX[2] + Tiro2Width > centerMeteoro2X && Tiro2PX[2] < centerMeteoro2X + centerMeteoro2Width && Tiro2PY[2] + Tiro2Height > centerMeteoro2Y && Tiro2PY[2] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro2PX[2]=1500;
+						tiro2Disparado[2] = false;
+				}
+				if (Tiro3PX[0] + Tiro3Width > centerMeteoro2X && Tiro3PX[0] < centerMeteoro2X + centerMeteoro2Width && Tiro3PY[0] + Tiro3Height > centerMeteoro2Y && Tiro3PY[0] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro3PX[0]=1500;
+						tiro3Disparado[0] = false;
+				}if (Tiro3PX[1] + Tiro3Width > centerMeteoro2X && Tiro3PX[1] < centerMeteoro2X + centerMeteoro2Width && Tiro3PY[1] + Tiro3Height > centerMeteoro2Y && Tiro3PY[1] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro3PX[1]=1500;
+						tiro3Disparado[1] = false;
+				}if (Tiro3PX[2] + Tiro3Width > centerMeteoro2X && Tiro3PX[2] < centerMeteoro2X + centerMeteoro2Width && Tiro3PY[2] + Tiro3Height > centerMeteoro2Y && Tiro3PY[2] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro3PX[2]=1500;
+						tiro3Disparado[2] = false;
+				}if (Tiro3PX[3] + Tiro3Width > centerMeteoro2X && Tiro3PX[3] < centerMeteoro2X + centerMeteoro2Width && Tiro3PY[3] + Tiro3Height > centerMeteoro2Y && Tiro3PY[3] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro3PX[3]=1500;
+						tiro3Disparado[3] = false;
+				}
+				if (Tiro3PX[4] + Tiro3Width > centerMeteoro2X && Tiro3PX[4] < centerMeteoro2X + centerMeteoro2Width && Tiro3PY[4] + Tiro3Height > centerMeteoro2Y && Tiro3PY[4] < centerMeteoro2Y + centerMeteoro2Height) {
+						pontos+=10;
+						expX2=px2;
+						expY2=py2;
+						currentFrameExp2=0;
+						explodiu2=true;
+						py2=-100;
+						px2=random(50,900);
+						Tiro3PX[4]=1500;
+						tiro3Disparado[4] = false;
+				}
+				// Meteoro pequeno
+				if (Tiro1PX[0] + Tiro1Width > centerMeteoro3X && Tiro1PX[0] < centerMeteoro3X + centerMeteoro3Width && Tiro1PY[0] + Tiro1Height > centerMeteoro3Y && Tiro1PY[0] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro1PX[0]=1500;
+						tiro1Disparado[0] = false;
+				}
+				if (Tiro1PX[1] + Tiro1Width > centerMeteoro3X && Tiro1PX[1] < centerMeteoro3X + centerMeteoro3Width && Tiro1PY[1] + Tiro1Height > centerMeteoro3Y && Tiro1PY[1] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro1PX[1]=1500;
+						tiro1Disparado[1] = false;
+				}
+				if (Tiro2PX[0] + Tiro2Width > centerMeteoro3X && Tiro2PX[0] < centerMeteoro3X + centerMeteoro3Width && Tiro2PY[0] + Tiro2Height > centerMeteoro3Y && Tiro2PY[0] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro2PX[0]=1500;
+						tiro2Disparado[0] = false;
+				}
+				if (Tiro2PX[1] + Tiro2Width > centerMeteoro3X && Tiro2PX[1] < centerMeteoro3X + centerMeteoro3Width && Tiro2PY[1] + Tiro2Height > centerMeteoro3Y && Tiro2PY[1] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro2PX[1]=1500;
+						tiro2Disparado[1] = false;
+				}
+				if (Tiro2PX[2] + Tiro2Width > centerMeteoro3X && Tiro2PX[2] < centerMeteoro3X + centerMeteoro3Width && Tiro2PY[2] + Tiro2Height > centerMeteoro3Y && Tiro2PY[2] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro2PX[2]=1500;
+						tiro2Disparado[2] = false;
+				}
+				if (Tiro3PX[0] + Tiro3Width > centerMeteoro3X && Tiro3PX[0] < centerMeteoro3X + centerMeteoro3Width && Tiro3PY[0] + Tiro3Height > centerMeteoro3Y && Tiro3PY[0] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro3PX[0]=1500;
+						tiro3Disparado[0] = false;
+				}if (Tiro3PX[1] + Tiro3Width > centerMeteoro3X && Tiro3PX[1] < centerMeteoro3X + centerMeteoro3Width && Tiro3PY[1] + Tiro3Height > centerMeteoro3Y && Tiro3PY[1] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro3PX[1]=1500;
+						tiro3Disparado[1] = false;
+				}if (Tiro3PX[2] + Tiro3Width > centerMeteoro3X && Tiro3PX[2] < centerMeteoro3X + centerMeteoro3Width && Tiro3PY[2] + Tiro3Height > centerMeteoro3Y && Tiro3PY[2] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro3PX[2]=1500;
+						tiro3Disparado[2] = false;
+				}if (Tiro3PX[3] + Tiro3Width > centerMeteoro3X && Tiro3PX[3] < centerMeteoro3X + centerMeteoro3Width && Tiro3PY[3] + Tiro3Height > centerMeteoro3Y && Tiro3PY[3] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro3PX[3]=1500;
+						tiro3Disparado[3] = false;
+				}
+				if (Tiro3PX[4] + Tiro3Width > centerMeteoro3X && Tiro3PX[4] < centerMeteoro3X + centerMeteoro3Width && Tiro3PY[4] + Tiro3Height > centerMeteoro3Y && Tiro3PY[4] < centerMeteoro3Y + centerMeteoro3Height) {
+						pontos+=15;
+						expX3=px3;
+						expY3=py3;
+						currentFrameExp3=0;
+						explodiu3=true;
+						py3=-100;
+						px3=random(150,900);
+						Tiro3PX[4]=1500;
+						tiro3Disparado[4] = false;
+				}
+				
+				if(tiro1Disparado[0] == true){
+						image(tiro1[0], Tiro1PX[0], Tiro1PY[0], Tiro1Width, Tiro1Height);
+						Tiro1PY[0]-=5;
+				}
+				if(tiro1Disparado[1] == true){
+						image(tiro1[0], Tiro1PX[1], Tiro1PY[1], Tiro1Width, Tiro1Height);
+						Tiro1PY[1]-=5;
+				}
+				if(tiro2Disparado[0] == true){
+						image(tiro1[1], Tiro2PX[0], Tiro2PY[0], Tiro2Width, Tiro2Height);
+						Tiro2PY[0]-=5;
+				}
+				if(tiro2Disparado[1] == true){
+						image(tiro1[1], Tiro2PX[1], Tiro2PY[1], Tiro2Width, Tiro2Height);
+						Tiro2PY[1]-=5;
+				}
+				if(tiro2Disparado[2] == true){
+						image(tiro1[1], Tiro2PX[2], Tiro2PY[2], Tiro2Width, Tiro2Height);
+						Tiro2PY[2]-=5;
+				}
+				if(tiro3Disparado[0] == true){
+						image(tiro1[2], Tiro3PX[0], Tiro3PY[0], Tiro3Width, Tiro3Height);
+						Tiro3PY[0]-=5;
+				}	
+				if(tiro3Disparado[1] == true){
+						image(tiro1[2], Tiro3PX[1], Tiro3PY[1], Tiro3Width, Tiro3Height);
+						Tiro3PY[1]-=5;
+				}
+				if(tiro3Disparado[2] == true){
+						image(tiro1[2], Tiro3PX[2], Tiro3PY[2], Tiro3Width, Tiro3Height);
+						Tiro3PY[2]-=5;
+				}
+				if(tiro3Disparado[3] == true){
+						image(tiro1[2], Tiro3PX[3], Tiro3PY[3], Tiro3Width, Tiro3Height);
+						Tiro3PY[3]-=5;
+				}
+				if(tiro3Disparado[0] == true){
+						image(tiro1[2], Tiro3PX[4], Tiro3PY[4], Tiro3Width, Tiro3Height);
+						Tiro3PY[4]-=5;
+				}
+					
+				
+			
+			textFont(f,30);
+			if(nave==1){
+				image(nave1, mouseX-30, 348,150,150);
+				fill(255,255,255);//sobra branca na letra 
+				text(balaPente1+"/"+(balaReserva1+balaReserva1b),951,491);//sobra branca na letra 
+				fill(0,0,250); 				
+				text(balaPente1+"/"+(balaReserva1+balaReserva1b),950,490);
+			}
+			if(nave==2){
+				image(nave2, mouseX-50, 350,150,150);
+				fill(255,255,255);//sobra branca na letra 
+				text(balaPente2+"/"+(balaReserva2+balaReserva2b),951,491);//sobra branca na letra 	
+				fill(0,0,250); 
+				text(balaPente2+"/"+(balaReserva2+balaReserva2b),950,490);
+			}
+			if(nave==3){
+				image(nave3, mouseX-60, 348,150,150);
+				fill(255,255,255);//sobra branca na letra 
+				text(balaPente3+"/"+(balaReserva3+balaReserva3b),951,491);//sobra branca na letra 	
+				fill(0,0,250); 
+				text(balaPente3+"/"+(balaReserva3+balaReserva3b),950,490);
+			}
+			if(nave==1){
+				image(hud[1],0,0,300,50);
+			}
+			if(nave==2){
+				image(hud[2],0,0,300,50);	
+			}
+			if(nave==3){
+				image(hud[3],0,0,300,50);
+			}
+			if(nave==1 && (balaReserva1+balaReserva1b)>0){
+				image(hud[4],0,0,300,50);
+			}
+			if(nave==2 && (balaReserva2+balaReserva2b)>0){
+				image(hud[4],0,0,300,50);				
+			}
+			if(nave==3 && (balaReserva3+balaReserva3b)>0){
+				image(hud[4],0,0,300,50);
+			}
+			image(mira, mouseX, mouseY,50,50);
+			fill(255,255,255);//sobra branca na letra 
+			text("Pontuação: " +pontos ,501,31);//sobra branca na letra 
+			text("Vidas: " +vida ,701,31);//sobra branca na letra
+			text("Record: " +record ,886,31);//sobra branca na letra
+			fill(0,0,250); 
+			text("Pontuação: " +pontos ,500,30);
+			text("Vidas: " +vida ,700,30);
+			text("Record: " +record ,885,30);//sobra branca na letra
+			if (keyPressed) {
+					if (key == 'R' || key == 'r'){
+						recarregar();
+					}
+					if (key == 'Q' || key == 'q'){
+						nave=1;
+						
+					}
+					if (key == 'w' || key == 'w'){
+						nave=2;
+					}
+					if (key == 'E' || key == 'e'){
+						nave=3;
+					}
+				
+			}
+		}	
+			
+						
+	}
+	void recarregar(){
+		if(balaReserva1>0 && nave==1 && balaPente1<12){
+			balaReserva1=0;
+			balaPente1=12;
+		}else if(balaReserva1b>0 && nave==1 && balaPente1<12){
+			balaReserva1b=0;
+			balaPente1=12;
+		}
+		if(balaReserva2>0 && nave==2 && balaPente2<8){
+			balaReserva2=0;
+			balaPente2=8;
+		}else if(balaReserva2b>0 && nave==2 && balaPente2<8){
+			balaReserva2b=0;
+			balaPente2=8;
+		}
+		if(balaReserva3>0 && nave ==3 && balaPente3<50){
+			balaReserva3=0;
+			balaPente3=50;
+		}else if(balaReserva3b>0 && nave ==3 && balaPente3<50){
+			balaReserva3b=0;
+			balaPente3=50;
+		}
+	}
+	
+	void drawAbertura(){
+		image(abertura,0,0);
+		textAlign(CENTER);
+		fill(255,255,0);
+		textSize(28);
+		text("Clique na tela para começar...",500,150);
+		text("Como jogar:",500,220);
+		textSize(22);
+		text("Clique na direção que deseja atirar...\nNão deixe o meteoro passar direto ou perderá vidas...\n"+
+		"Você só tem 5 vidas e as balas não são infinitas, capriche na mira...\n"+
+		"R - Recarregar munição \nQ W E - Para selecionar a nave desejada.\n"+
+		"Eu te desafio a bater o record de 900 pontos!!!",500,250);
+		
+	
+		image(sabre, mouseX, mouseY,40,80);
+	}
+	
+	void drawGameOver(){
+		image(encerra,0,0);
+		textAlign(CENTER);
+		fill(0,0,250);
+		textSize(28);
+		textSize(22);
+		text("Sua pontuação foi "+p+"!!!\nPressione uma tecla para tentar novamente...",500,250);
+		if (keyPressed) {
+			state=1;
+		}
+	}
+	
+	void mousePressed(){
+		if(balaPente1>0 && nave==1){
+			if(tiro1Disparado[0]==false){
+				balaPente1-=1;
+				Tiro1PX[0]=mouseX;
+				Tiro1PY[0]=350;
+				tiro1Disparado[0] = true;
+			}else if(tiro1Disparado[1]==false){
+				balaPente1-=1;
+				Tiro1PX[1]=mouseX;
+				Tiro1PY[1]=350;
+				tiro1Disparado[1] = true;
+			}			
+			
+		}
+		if(balaPente2>0 && nave==2){
+			if(tiro2Disparado[0]==false){
+				balaPente2-=1;
+				Tiro2PX[0]=mouseX;
+				Tiro2PY[0]=350;
+				tiro2Disparado[0] = true;
+			}else if(tiro2Disparado[1]==false){
+				balaPente2-=1;
+				Tiro2PX[1]=mouseX;
+				Tiro2PY[1]=350;
+				tiro2Disparado[1] = true;
+			}else if(tiro2Disparado[2]==false){
+				balaPente2-=1;
+				Tiro2PX[2]=mouseX;
+				Tiro2PY[2]=350;
+				tiro2Disparado[2] = true;
+			}
+		}
+		if(balaPente3>0 && nave==3){
+			if(tiro3Disparado[0]==false){
+				balaPente3-=1;
+				Tiro3PX[0]=mouseX;
+				Tiro3PY[0]=350;
+				tiro3Disparado[0] = true;
+			}else if(tiro3Disparado[1]==false){
+				balaPente3-=1;
+				Tiro3PX[1]=mouseX;
+				Tiro3PY[1]=350;
+				tiro3Disparado[1] = true;
+			}else if(tiro3Disparado[2]==false){
+				balaPente3-=1;
+				Tiro3PX[2]=mouseX;
+				Tiro3PY[2]=350;
+				tiro3Disparado[2] = true;
+			} else if(tiro3Disparado[3]==false){
+				balaPente3-=1;
+				Tiro3PX[3]=mouseX;
+				Tiro3PY[3]=350;
+				tiro3Disparado[3] = true;
+			}else if(tiro3Disparado[4]==false){
+				balaPente3-=1;
+				Tiro3PX[4]=mouseX;
+				Tiro3PY[4]=350;
+				tiro3Disparado[4] = true;
+			}	
+		}
+			if (state==0){
+				state=1;
+			}
+		
+	}	
+	
+	void mouseMoved() {//Se o mause for movido
+		checkButtons();//Execura o checkButtons
+	}
+	void mouseDragged() {//Se o mouse for arrastado
+		checkButtons();//Execurta o checkButtons
+	}
+	void checkButtons() {
+		if (mouseX > px1-50 && mouseX < px1+50 && mouseY > py1-50 && mouseY <py1+50) {
+			overButton1 = true;
+		} else {
+			overButton1 = false;
+		}
+		if (mouseX > px2-35 && mouseX < px2+35 && mouseY > py2-35 && mouseY <py2+35) {
+			overButton2 = true;
+		} else {
+			overButton2 = false;
+		}
+		if (mouseX > px3-40 && mouseX < px3+10 && mouseY > py3-40 && mouseY <py3+10) {
+			overButton3 = true;
+		} else {
+			overButton3 = false;
+		}
+}
+</script>
+<body>
+	<!--Barra de navegação-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark pt-0 pb-0">
+		<!--Define o logo e seu texto-->
+		<a class="navbar-brand" href="http://diegomeruoca.github.io">
+			<img src="imagens/logo.png" height=60px class="d-inline-block align-center">
+			<!---<span style="color:#165FA4">Diego Meruoca</span>-->
+		</a>
+		
+		<!--Botão de menu sanduiche, aparece quando a tela é pequena-->
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" 
+			aria-controls="myNavbar" aria-expanded="false" aria-label="Alterna navegação">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<!--Criação dos botões-->
+		<div class="collapse navbar-collapse" id="myNavbar">
+			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="http://diegomeruoca.github.io/Shooter">The shooter</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="http://diegomeruoca.github.io/SpaceDefender">Space Defender</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="http://diegomeruoca.github.io">Meu site</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<br>
+	<!-- canvas do jogo-->
+	<center>
+		<canvas id="minhajanela" class="mw-100"></canvas><br>
+	
+		<br>			
+		<!-- Botão para acionar modal -->
+		<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalExemplo">
+			Dicas para detonar!!!
+		</button>
+		<br>
+	</center>
+	<!-- Modal -->
+	<div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content bg-dark text-light">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Como jogar:</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div>
+				<div class="modal-body">
+					Clique na direção que deseja atirar... 
+					<br>Se destruir algum meteoro ganha pontos!!!
+					<br>Meteoro grande - 5 Pontos
+					<br>Meteoro médio - 10 Pontos
+					<br>Meteoro pequeno - 15 Pontos
+					<br>Jamais deixe algum meteoro passar direto ou perderá vidas..
+					<br>Você só tem 5 vidas e as balas não são infinitas, capriche na mira...
+					<br>Q W E - Para selecionar a nave desejada.
+					<br>Q - Tiros grandes, porém apenas dois por vez.  
+					<br>W - Tiros médios, mas até três por vez.
+					<br>E - Tiros pequenos, entretando até cinco de uma vez.
+					<br>R - Recarregar munição.
+					<br>Escolha estratégicamente quel nave usará primeiro, lembre-se de gerenciar a quantidade de munição...
+					<br>Se você recarregar antes de acabar a bala do pente atual, você disperdiçará munição!!!
+					<br>Eu te desafio a bater o record de 900 pontos!!!
+				</div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="Container text-light">
+		Jogo criado em JavaScript utilizando a biblioteca Processing, imagens obtidas através da Internet.
+		<br>Essa aplicação tem carater apenas acadêmico, sem nenhuma intenção comercial, foi criada apenas com 
+		intuito de testar e conhecer os recursos presentes na biblioteca processing.
+	</div>
+	<br>
+	
+	<!--Rodapé-->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark pt-0 pb-0">		
+			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+				<li class="nav-item	">
+					<a class="nav-link text-light" href="https://diegomeruoca.github.io/Quem%20sou.html">Desenvolvido por Diego Meruoca</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-light" href="https://github.com/DiegoMeruoca/SpaceDefender">Repositorio do jogo - Github</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link text-light" href="http://diegomeruoca.github.io/Contatos.html">Contatos</a>
+				</li>
+			</ul>		
+	</nav>
+	<!-- JavaScript (Opcional) -->
+	<!-- jQuery primeiro, depois Popper.js, depois Bootstrap JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	
+</body>
+</html>
